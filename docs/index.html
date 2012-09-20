@@ -1,0 +1,196 @@
+<h1>Android SDK v1</h1>
+
+<p>This SDK is for building extensions to target beta 33 and compatible releases of the Android exporter.</p>
+
+<p><em>Note that this is not a complete guide to the extension development process, but rather instructions for existing extension developers to make use of the Android SDK.</em></p>
+
+<ol>
+<li><p><a href="#prerequisites">Prerequisites</a><br /></p></li>
+<li><p><a href="#building">Building the Runtime</a><br />
+2.1. <a href="#obtaining-source">Obtaining the source</a>
+2.2. <a href="#exporting-ccn">Exporting a CCN</a><br />
+2.3. <a href="#building-ant">Building with Ant</a><br />
+2.4. <a href="#building-idea">Building with IntelliJ IDEA</a><br />
+2.5. <a href="#building-eclipse">Building with Eclipse</a><br /></p></li>
+<li><p><a href="#adding">Adding your Extension</a><br />
+3.1. <a href="#java-or-c">Java or C/C++?</a><br />
+3.2. <a href="#adding-java">Adding a new Java extension</a><br />
+3.3. <a href="#adding-c">Adding a new C/C++ extension</a><br /></p></li>
+<li><p><a href="#graphical-extensions">Graphical Extensions</a><br />
+4.1. <a href="#graphical-java">In Java</a><br />
+4.2. <a href="#graphical-c">In C/C++</a><br />
+4.3. <a href="#graphical-view">With a View</a></p></li>
+<li><p><a href="#packaging">Packaging</a><br /></p></li>
+</ol>
+
+<hr />
+
+<h2><a id="prerequisites"> 1.  Prerequisites</h2>
+
+<ul>
+<li><p>The official Android SDK, with the same API versions necessary for building from MMF2 (if you haven't already configured this, refer to the MMF2 documentation.)  The <code>tools</code> and <code>platform-tools</code> directories should be added to your <code>PATH</code> environment variable.</p></li>
+<li><p>If developing on Windows, the <a href="http://developer.android.com/tools/extras/oem-usb.html">appropriate drivers</a> to use ADB with your device</p></li>
+<li><p>Either an installation of <a href="http://ant.apache.org/">Apache Ant</a> or a Java IDE of your choice configured for Android development (such as <a href="http://www.eclipse.org/downloads/">Eclipse</a>, <a href="http://www.jetbrains.com/idea/">IDEA</a> or <a href="http://www.netbeans.org">NetBeans</a>.)  If MMF2 is installed, Apache Ant can be found in the <code>Data/Runtime/Android</code> directory and may be simply added to your <code>PATH</code>.</p></li>
+<li><p>For C/C++ development, the <a href="http://developer.android.com/tools/sdk/ndk/index.html">Android NDK</a> should be installed and added to your <code>PATH</code>. On Windows, you will also find it useful to have a <a href="http://www.cygwin.com/">Cygwin</a> installation (although it's no longer necessary for the NDK).</p></li>
+<li><p>An installation of MMF2 with the Android exporter.  This need not be on the same machine as the SDK.</p></li>
+</ul>
+
+<hr />
+
+<h2><a id="building"></a> 2. Building the Runtime</h2>
+
+<h3><a id="obtaining-source"></a> 2.1.  Obtaining the source</h3>
+
+<p>The runtime source is installed with the Android exporter, and can be found in your MMF2 installation as <code>Data/Runtime/Android/RuntimeAndroid.zip</code>.  This should be extracted to the <code>runtime/</code> directory of the SDK.</p>
+
+<h3><a id="building-ant"></a> 2.2.  Exporting a CCN</h3>
+
+<p>The runtime requires an application.ccn in the <code>res/raw</code> directory to function.  MMF2 with the Android exporter has a hidden feature to export just the CCN and sounds for an application, without building an APK.</p>
+
+<p>To use this, go to build an Android application as normal, but before selecting Save (in the <code>res/raw</code> directory of the SDK), hold down the shift key.  Continue to hold shift until the export is complete.</p>
+
+<h3><a id="building-ant"></a> 2.3.  Building with Ant</h3>
+
+<p>If you prefer to work without an IDE, the runtime should compile out of the box with Apache Ant.  Simply navigating to the <code>runtime/</code> directory and running <code>ant debug</code> should be enough to produce an APK in <code>runtime/bin/</code>.</p>
+
+<p>The APK can be (re)installed on a device with <code>adb</code>. For example:</p>
+
+<pre><code>adb install -r ./bin/RuntimeAndroid-debug.apk
+</code></pre>
+
+<h3><a id="building-idea"></a> 2.4.  Building with IntelliJ IDEA</h3>
+
+<p>Note that you should already have IDEA configured for Android development before attempting to work with the MMF SDK.  For more information, see the <a href="http://code.google.com/p/idea-android/wiki/GettingStarted">idea-android documentation</a>.</p>
+
+<p>Select <code>File &gt; New Project</code> and choose to create a project from existing sources:</p>
+
+<p><img src="./img/idea-new-project.png" alt="IDEA: New Project" title="" /></p>
+
+<p>When prompted, choose the <code>runtime</code> directory from this SDK package:</p>
+
+<p><img src="./img/idea-project-location.png" alt="IDEA: Project Location" title="" /></p>
+
+<p>Then follow the wizard to create a project (you shouldn't have to change any of the defaults).  The runtime is now ready to work with like any other Android project in IDEA.</p>
+
+<p>If you find that the application will only run on the emulator, it may be necessary to change the run configuration.  To do this, select <code>Edit Configurations</code> from the <code>Run</code> menu:</p>
+
+<p><img src="./img/idea-edit-run-configurations.png" alt="IDEA: Run > Edit Configurations" title="" /></p>
+
+<p>and change the target device as desired:</p>
+
+<p><img src="./img/idea-target-device.png" alt="IDEA: Target Device" title="" /></p>
+
+<h3><a id="building-eclipse"></a> 2.5.  Building with Eclipse</h3>
+
+<p>Note that you should already have Eclipse configured for Android development before attempting to work with the MMF SDK.  For more information, see <a href="http://developer.android.com/sdk/installing/installing-adt.html">Installing ADT</a>.</p>
+
+<p>Select <code>File &gt; New &gt; Project</code> and choose the <code>Android Project from Existing Code</code> wizard:</p>
+
+<p><img src="./img/eclipse-new-project.png" alt="Eclipse: Android Project from Existing Code" title="" /></p>
+
+<p>When prompted for the root directory, choose the <code>runtime</code> directory from this SDK package:</p>
+
+<p><img src="./img/eclipse-root-directory.png" alt="Eclipse: Root Directory" title="" /></p>
+
+<p>The runtime is now ready to work with like any other Android project in Eclipse.</p>
+
+<hr />
+
+<h2><a id="adding"></a> 3.  Adding your Extension</h2>
+
+<h3><a id="java-or-c"></a> 3.1  Java or C/C++?</h3>
+
+<p>The MMF runtime for Android is a hybrid runtime, in which some of the code is written in Java and some (such as collision masks and the GL renderer) in C/C++.  Extensions may be written in either language.</p>
+
+<p>Generally speaking, if your extension will do any of the following:</p>
+
+<ul>
+<li>Make use of Java Android APIs</li>
+<li>Make use of MMF runtime APIs beyond the simple action/condition/expression call pattern</li>
+</ul>
+
+<p>You should be writing it in Java. However, if the above limitations do not apply <em>and</em> your extension will:</p>
+
+<ul>
+<li>Be performance critical</li>
+<li>Make use of a C/C++ library</li>
+<li>Interact with the kernel</li>
+<li>Directly call OpenGL APIs</li>
+</ul>
+
+<p>Then the C/C++ SDK may be more appropriate. It's also worth considering which languages your extension has already been ported to; if your extension works with the Java runtime, it will probably already be compatible with Android.</p>
+
+<h3><a id="adding-java"></a> 3.2  Adding a new Java extension</h3>
+
+<p>The steps for this are nearly identical to the Java and Flash runtimes:</p>
+
+<ol>
+<li><p>Create a new class under <code>Extensions</code>.  If your extension is called <code>Example.mfx</code>, the class would be called <code>CRunExample</code>.  It may help to make a copy of an existing extension as a starting point (I usually use <code>CRunGet</code>).</p></li>
+<li><p>Edit the <code>CExtLoad</code> class under <code>Extensions</code>, adding your extension to the list before <code>// ENDCUT</code>.  For example:</p>
+
+<p>if (name.compareToIgnoreCase ("Example") == 0)
+ {
+    object = new CRunExample ();
+ }</p></li>
+</ol>
+
+<h3><a id="adding-c"></a> 3.3  Adding a new C/C++ extension</h3>
+
+<ol>
+<li><p>Inside the <code>native</code> directory, copy <code>CRunTemplate</code> and rename it to the name of your extension.  If your extension is called <code>Example.mfx</code>, the new directory would be called <code>CRunExample</code>.</p></li>
+<li><p>Open the <code>Android.mk</code> file in your new directory, and update <code>LOCAL_MODULE</code> to the correct name</p></li>
+<li><p>From a terminal, run <code>ndk-build</code> in the directory.  This should produce a set of shared objects (one for each architecture) in the <code>libs</code> directory, which should be copied to <code>runtime/assets/mmf/</code>.</p></li>
+</ol>
+
+<p>In the <code>tools/</code> directory, a script called <code>install-native</code> is provided to automate the process of building native extensions and copying over the shared objects.  (On Windows, you should run it under Cygwin bash.)</p>
+
+<hr />
+
+<h2><a id="graphical-extensions"></a> 4.  Graphical Extensions</h2>
+
+<p>Like the iOS runtime, the Android runtime is hardware accelerated using OpenGL ES 2.0.  Extensions should only ever draw to the screen in <code>displayRunObject</code>.</p>
+
+<h3><a id="graphical-java"></a> 4.1.  In Java</h3>
+
+<p>The renderer class used by most of the runtime is available in <code>GLRenderer.inst</code>, providing high-level methods for drawing images and primitives to the screen.  In most cases, this is recommended over using OpenGL directly.</p>
+
+<p>If direct access to the OpenGL APIs is required, extensions are permitted to <code>import android.opengl.GLES20</code> and use the <code>GLES20.*</code> methods as they desire, providing they are only called from within <code>displayRunObject</code>.  Note that this might break if future versions of the runtime don't use ES 2.0 in all cases (while the high-level renderer obviously will not).</p>
+
+<h3><a id="graphical-c"></a> 4.2.  In C/C++</h3>
+
+<p>The high-level renderer is not available in C/C++, so the only option is to use the ES 2.0 methods directly.  OpenGL is usually more convenient to work with from C than Java, but the issue of possible breakage with future runtime versions still applies.</p>
+
+<p>The native extension template links with <code>libGLESv2</code> by default.</p>
+
+<h3><a id="graphical-view"></a> 4.3.  With a View</h3>
+
+<p>If your extension is going to host a <a href="http://developer.android.com/reference/android/view/View.html">View</a> (as, for example, the Button object does):</p>
+
+<ol>
+<li>Extend <code>CRunViewExtension</code> instead of <code>CRunExtension</code></li>
+<li>In <code>createRunObject</code>, create your <code>View</code> and pass it to <code>setView</code></li>
+<li>If you have actions to set the position of your object, call <code>setViewX</code>, <code>setViewY</code> or <code>setViewPosition</code></li>
+<li>If you have actions to set the size of your object, call <code>setViewWidth</code>, <code>setViewHeight</code> or <code>setViewSize</code></li>
+</ol>
+
+<p>The runtime will then ensure that your view is correctly displayed.  View extensions cannot be written in C/C++.</p>
+
+<hr />
+
+<h2><a id="packaging"></a> 5.  Packaging</h2>
+
+<p>MMF2 searches for Android extensions in the <code>Data/Runtime/Android</code> directory, as ZIP archives to merge with the runtime source before building.</p>
+
+<p>To distribute your extension, you should create a ZIP with the same structure as the <code>runtime/</code> directory from the SDK.  For example, <code>Data/Runtime/Android/Get.zip</code> contains just one correctly nested file:</p>
+
+<pre><code>./src/Extensions/CRunGet.java
+</code></pre>
+
+<p>And <code>Data/Runtime/Android/AESFusion.zip</code> (a C extension) contains the shared objects for three different architectures:</p>
+
+<pre><code>./assets/mmf/armeabi/CRunAESFusion.so
+./assets/mmf/armeabi-v7a/CRunAESFusion.so
+./assets/mmf/x86/CRunAESFusion.so
+</code></pre>
+
+<p>An extension package may contain anything, including additional resources (such as images, sounds or shaders) for the <code>res/</code> directory.</p>

@@ -1,0 +1,40 @@
+#!/bin/bash
+
+pushd ../native/
+
+rm -f *.so
+
+for file in CRun*
+do
+    pushd $file/jni
+    ndk-build
+    popd
+done
+
+install () {
+
+    echo Installing arch: $1
+
+    rm -rf ../android/assets/mmf/$1
+
+    for file in CRun*
+    do
+        cp $file/libs/$1/*.so ./
+    done
+
+    for file in *.so
+    do
+        mv $file `echo $file | sed 's/lib//'`
+    done
+
+    mkdir -p ../runtime/assets/mmf/$1
+    mv *.so ../runtime/assets/mmf/$1/
+}
+
+install armeabi
+install armeabi-v7a
+install x86
+
+popd
+
+
